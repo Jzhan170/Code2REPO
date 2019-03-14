@@ -1,7 +1,9 @@
 int cols, rows; 
 int w = 50;
 int h = 25; 
-int at,ti;
+int lives,score;
+float startingT;
+float clickingT;
 
 Ball b; 
 Paddle p; 
@@ -13,11 +15,10 @@ void setup(){
   rows = int((height*.5)/h); 
   
   noStroke(); 
-  
+  lives = 3;
+  startingT = millis();
   textSize(20);
   
-  at =60;
-  ti=60;
   
   myBricks = new Bricks[cols][rows]; 
   
@@ -37,13 +38,9 @@ void draw(){
   background(0); 
   
   textAlign(CENTER, TOP);
-  text("Time: " + at,350, 460);
   
-  ti=ti-1;
-  if(ti==0){
-    ti=60;
-  at=at-1;
-  }
+  
+  
   
   b.move(); 
   b.display();
@@ -55,10 +52,14 @@ void draw(){
   if(b.pos.x<= b.size/2 || b.pos.x>= width-b.size/2){
     b.bounceSide(); 
   }
-  if(b.pos.y<=b.size/2 || b.pos.y>= height-b.size/2){
+  if(b.pos.y<=b.size/2 ){
     b.bounceTop(); 
   }
-  
+  if(b.pos.y>=height){
+    b.bounceTop();
+    b.ballReset();
+    lives = lives -=1;
+  }
   //ball bouncing off of the paddle 
   //FIX THIS PADDLE COLLISION IS NOT WORKING
   if(b.pos.x >= p.x && b.pos.x <= p.x+p.w &&b.pos.y<=(p.y+(b.size/2))&& b.pos.y>=(p.y-b.size/2+p.h/2)){ 
@@ -77,6 +78,7 @@ void draw(){
         && b.pos.y<= (myBricks[i][j].y + myBricks[i][j].h) && b.pos.y>= (myBricks[i][j].y - myBricks[i][j].h)&& myBricks[i][j].detector == true){
          myBricks[i][j].o = 0;
          b.bounceTop();
+         score = score+=1;
          myBricks[i][j].detector = false;
          //just changing the opacity here but you can figure out how to remove the object using an array list 
       }
@@ -93,8 +95,16 @@ void draw(){
       }
     }
   }
-}
-
-void keyPressed(){
-
+  
+  String printlives = ("LIVES:"+lives);
+  fill(255);
+  text(printlives, width-150, height-50);
+  
+  String printscore = ("SCORE:"+score);
+  fill(255);
+  text(printscore,width-50,height-50);
+  float clickingT = (millis()- startingT)/1000;
+  println(clickingT);
+  text(60-clickingT,width/2,height-50);
+  
 }

@@ -32,4 +32,9 @@ class Ball{
     fill(255); 
     ellipse(pos.x, pos.y, size, size); 
   }
+  
+  void ballReset() {
+    pos.x = random(width*.25, width*.75);
+    pos.y = height*.75;
+  }
 }
